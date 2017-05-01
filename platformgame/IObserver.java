@@ -5,21 +5,10 @@
  */
 package platformgame;
 
-import View.GridView;
-import View.View;
 /**
  *
  * @author Mateusz
  */
-public class PlatformGame
-{
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) 
-    {
-        World word = new World(2, 2);
-        
-    }
-    
+public interface IObserver {
+    void update(Object object);
 }

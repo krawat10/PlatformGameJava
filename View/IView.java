@@ -10,6 +10,9 @@ package View;
  * @author Mateusz
  */
 public interface IView {    
-    public void setVisibility();
+    
     public void RefreshScreen();
+    public void drawObject(char symbolOfObject, int x, int y);
+    public void deleteObject(int x, int y);
+    public void setVisibility();
 }
