@@ -10,7 +10,10 @@ package platformgame;
  * @author Mateusz
  */
 public interface IObservable {
+
     public void AddSubscriber(IObserver newObserver);
+
     public void RemoveSubscriber(IObserver observerToDelete);
+
     public void NotifySubscribers();
 }

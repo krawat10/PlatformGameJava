@@ -10,5 +10,6 @@ package platformgame;
  * @author Mateusz
  */
 public interface IObserver {
+
     void update(Object object);
 }

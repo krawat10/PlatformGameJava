@@ -9,10 +9,13 @@ package View;
  *
  * @author Mateusz
  */
-public interface IView {    
-    
-    public void RefreshScreen();
-    public void drawObject(char symbolOfObject, int x, int y);
+public interface IView {
+
+    public void refreshScreen();
+
+    public void drawObject(int x, int y, String name);
+
     public void deleteObject(int x, int y);
+
     public void setVisibility();
 }

@@ -14,27 +14,23 @@ import java.util.Vector;
  *
  * @author Mateusz
  */
-public class Keyboard extends KeyAdapter implements IObservable{
-    
+public class Keyboard extends KeyAdapter implements IObservable {
+
     ArrayList<IObserver> subscribers;
-    KeyName activeKey; 
+    KeyName activeKey;
 
-    
-    public Keyboard() 
-    {
-    subscribers = new ArrayList<>();
+    public Keyboard() {
+        subscribers = new ArrayList<>();
+        activeKey = KeyName.DISACTIVATED;
+    }
 
-           
+    public enum KeyName {
+        UP, DOWN, LEFT, RIGHT, SHIELD, SAVE, DISACTIVATED;
     }
-    
-    
-    public enum KeyName
-    {
-    UP, DOWN, LEFT, RIGHT;
-    }
-    
+
     @Override
     public void AddSubscriber(IObserver newObserver) {
+        System.out.println(newObserver.toString());
         subscribers.add(newObserver);
     }
 
@@ -45,38 +41,37 @@ public class Keyboard extends KeyAdapter implements IObservable{
 
     @Override
     public void NotifySubscribers() {
-        System.out.println("Notifuy");
-        for(IObserver subscriber : subscribers)
-        {
+
+        for (IObserver subscriber : subscribers) {
+            System.out.println(subscriber.toString());
             subscriber.update(activeKey);
         }
     }
-    
-    @Override
-        public void keyPressed(KeyEvent event) {        
-         
-            int keyCode = event.getKeyCode();
-            if (keyCode == event.VK_LEFT)
-            {
-                activeKey = KeyName.LEFT;
-            }
-            if (keyCode == event.VK_RIGHT)
-            {
-                activeKey = KeyName.RIGHT;
-            }
-            if (keyCode == event.VK_UP)
-            {
-                activeKey = KeyName.UP;
-            }
-            if (keyCode == event.VK_DOWN)
-            {
-                activeKey = KeyName.DOWN;
-            }
-            NotifySubscribers();
-            System.out.println("Pressed " + event.getKeyChar());
-        }
 
-        @Override
-        public void keyReleased(KeyEvent event) {
+    @Override
+    public void keyPressed(KeyEvent event) {
+
+        int keyCode = event.getKeyCode();
+        if (keyCode == event.VK_LEFT) {
+            activeKey = KeyName.LEFT;
         }
+        if (keyCode == event.VK_RIGHT) {
+            activeKey = KeyName.RIGHT;
+        }
+        if (keyCode == event.VK_UP) {
+            activeKey = KeyName.UP;
+        }
+        if (keyCode == event.VK_DOWN) {
+            activeKey = KeyName.DOWN;
+        }
+        if (keyCode == event.VK_SPACE) {
+            activeKey = KeyName.SHIELD;
+        }
+        NotifySubscribers();
+        System.out.println("Pressed " + event.getKeyChar());
+    }
+
+    @Override
+    public void keyReleased(KeyEvent event) {
+    }
 }

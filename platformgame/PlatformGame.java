@@ -5,21 +5,32 @@
  */
 package platformgame;
 
+import Organism.Antelope;
+import Organism.CyberSheep;
+import Organism.Grass;
+import Organism.Human;
+import Organism.Wolf;
 import View.GridView;
 import View.View;
+
 /**
  *
  * @author Mateusz
  */
-public class PlatformGame
-{
+public class PlatformGame {
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) 
-    {
-        World word = new World(2, 2);
-        
+    public static void main(String[] args) {
+        World word = new World(15, 7);
+        word.addCreature(new Human(word));
+        word.addCreature(new Antelope(word));
+        word.addCreature(new Grass(word));
+        word.addCreature(new Wolf(word));
+        word.addCreature(new CyberSheep(word));
+        word.drawWorld();
+
     }
-    
+
 }

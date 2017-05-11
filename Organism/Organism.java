@@ -6,107 +6,141 @@
 package Organism;
 
 import platformgame.World;
+
 /**
  *
  * @author Mateusz
  */
-public class Organism {
-    
-    	protected boolean isAlive;
-	protected World world;
-	protected int strength;
-	protected int initative;
-	protected char symbol;
-	protected int x;
-	protected int y;
-	protected static int counter;
-	protected String name;
-        
-        //Constructors
-    	public Organism(int x, int y, World world)
-        {
-            
+public abstract class Organism implements Comparable<Organism> {
+
+    protected boolean isAlive;
+    protected World world;
+    protected int strength;
+    protected int initative;
+    protected char symbol;
+    protected int x;
+    protected int y;
+    protected static int counter;
+    protected String name;
+
+    //Constructors
+    public Organism(int x, int y, World world) {
+        this.setIsAlive(true);
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        InitFeathures();
+        this.world.getView().drawObject(x, y, name);
+
+    }
+
+    protected abstract Organism newInstance(int x, int y);
+
+    public Organism(World _world) {
+        this.isAlive = true;
+        this.world = _world;
+        int[] newXY;
+        newXY = this.world.GetFreeSpot();
+        this.x = newXY[0];
+        this.y = newXY[1];
+        InitFeathures();
+        this.world.getView().setNewMessage(name + " is initalized");
+        this.world.getView().drawObject(x, y, name);
+    }
+
+    protected abstract void InitFeathures();
+
+    public int getStrength() {
+        return this.strength;
+    }
+
+    public void setStrength(int value) {
+        this.strength = value;
+    }
+
+    public int getInitative() {
+        return this.initative;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public void setX(int value) {
+        this.x = value;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public void setY(int value) {
+        this.y = value;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public boolean getIsAlive() {
+        return this.isAlive;
+    }
+
+    public void setIsAlive(boolean newStatus) {
+        this.isAlive = newStatus;
+        if (!newStatus) {
+            this.world.getView().setNewMessage(this.name + " is dead.");
+            this.world.getView().deleteObject(this.x, this.y);
         }
-        
-	public Organism(World world)
-        {
-            
-        }        
-	
-        //Methods
-	public int getStrength()
-        {
-            return this.strength;
+    }
+
+    public abstract void action();
+
+    static boolean AIsLessThanB(Organism A, Organism B) {
+        return A.getStrength() < B.getStrength();
+    }
+
+    void draw(int x, int y) {
+        this.world.getView().deleteObject(this.x, this.y);
+        this.world.getView().drawObject(x, y, name);
+        this.x = x;
+        this.y = y;
+    }
+
+    public boolean isPushBackAttack(Organism attacker) {
+        if (AIsLessThanB(this, attacker)) {
+            this.setIsAlive(false);
+            return false;
+        } else {
+            attacker.setIsAlive(false);
+            return true;
         }
-        
-	public void setStrength(int value)
-        {
-            this.strength = value;
+    }
+
+    void multiplication() {
+        int i = 8;
+        boolean isMoved = false;
+
+        while (!isMoved && (i-- != 0)) {
+            int[] newXY = this.newRandomPositionAround();
+            if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.OPEN) {
+                this.world.addCreature(newInstance(newXY[0], newXY[1]));
+                isMoved = true;
+            }
         }
-        
-	public int getInitative()
-        {
-            return this.initative;
-        }
-        
-	public int getX()
-        {
-            return this.x;
-        }
-        
-	public void setX(int value)
-        {
-            this.x = value;
-        }
-        
-	public int getY()
-        {
-            return this.y;
-        }
-        
-        public void setY(int value)
-        {
-            this.y = value;
-        }
-        
-	public String getName()
-        {
-            return this.name;
-        }
-        
-	public boolean getIsAlive()
-        {
-            return this.isAlive;
-        } 
-               
-	public void setIsAlive(boolean newStatus)
-        {
-            this.isAlive = newStatus;
-        }
-        
-	public void action()
-        {
-            
-        }
-        
-	static boolean AIsLessThanB (Organism A, Organism B)
-        {
-            return A.getStrength() < B.getStrength();
-        }
-        
-	protected boolean isPushBackAttack(Organism attacker)
-        {
-            return AIsLessThanB(attacker, this);
-        }
-        
-	void moveTo(int desireX, int desireY)
-        {
-        
-        }
-        
-        protected int newRandomPositionAround(int x, int y)
-        {
-            return 0;
-        }
+    }
+
+    void moveTo(int desireX, int desireY) {
+
+    }
+
+    protected int[] newRandomPositionAround() {
+        return this.world.getView().positionAround(this.x, this.y);
+    }
+
+    @Override
+    public int compareTo(Organism o) {
+        return o.initative - this.initative;
+    }
 
 }
