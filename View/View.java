@@ -48,6 +48,7 @@ public abstract class View extends JPanel implements IView, ActionListener {
     private JComboBox OrganismList;
     protected int sizeOfRectangle = 50;
     private World world;
+    protected int numberOfFieldAroundOneField;
     JButton open;
     JButton save;
     JButton tour;
@@ -72,6 +73,8 @@ public abstract class View extends JPanel implements IView, ActionListener {
         this.sizeOfRectangle = view.sizeOfRectangle;
     }
 
+    public abstract Point getPositionAround(int x, int y, int indexOfField);
+    
     public static void deleteInstance() {
         uniqueObject = null;
     }
@@ -88,6 +91,11 @@ public abstract class View extends JPanel implements IView, ActionListener {
         this.sizeY = value;
     }
 
+    public int getNumberOfFieldsAroundOneField()
+    {
+        return this.numberOfFieldAroundOneField;
+    }
+    
     public void dotGrid() {
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
@@ -104,7 +112,7 @@ public abstract class View extends JPanel implements IView, ActionListener {
 
         f.getContentPane().add(this, BorderLayout.CENTER);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize((int) (sizeOfRectangle * sizeX + 123), (int) (sizeOfRectangle * sizeY + 40));
+        f.setSize((int) (sizeOfRectangle * sizeX + 160), (int) (sizeOfRectangle * sizeY + 40));
         f.setVisible(true);
 
     }
@@ -172,7 +180,7 @@ public abstract class View extends JPanel implements IView, ActionListener {
         save.setBounds((sizeX * sizeOfRectangle), ((sizeY - 1) * 25),
                 100, 24);
         OrganismList.setFocusable(false);
-        f.setSize((int) (sizeOfRectangle * sizeX + 123), (int) (sizeOfRectangle * sizeY + 40));
+        f.setSize((int) (sizeOfRectangle * sizeX + 160), (int) (sizeOfRectangle * sizeY + 40));
         initMessage();
         initButtons();
     }
@@ -234,11 +242,9 @@ public abstract class View extends JPanel implements IView, ActionListener {
         this.add(tour);
 
     }
-    public abstract int[] newDirection(int x, int y, Keyboard.KeyName key);
+    public abstract Point newDirection(int x, int y, Keyboard.KeyName key);
     private void addJComboBox() {
-        String[] petStrings = {"Wolf", "Antelope", "Grass", "Sheep", "CyberSheep"};
-
-        OrganismList = new JComboBox(petStrings);
+        OrganismList = new JComboBox(OrganismFactory.names);
         OrganismList.setSelectedIndex(4);
         OrganismList.setBounds((sizeX * sizeOfRectangle), ((sizeY) * 25),
                 100, 24);
@@ -303,11 +309,7 @@ public abstract class View extends JPanel implements IView, ActionListener {
             drawMessages(g, i);
         }
 
-    }
-
-    public void drawControls() {
-
-    }
+    }   
 
     @Override
     public void deleteObject(int x, int y) {
@@ -315,7 +317,7 @@ public abstract class View extends JPanel implements IView, ActionListener {
         this.repaint();
     }
 
-    public abstract int[] positionAround(int x, int y);
+    public abstract Point positionAround(int x, int y);
 
     public void setNewMessage(String message) {
 

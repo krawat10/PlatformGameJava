@@ -5,6 +5,7 @@
  */
 package Organism;
 
+import java.awt.Point;
 import platformgame.World;
 
 /**
@@ -22,6 +23,7 @@ public abstract class Organism implements Comparable<Organism> {
     protected int y;
     protected static int counter;
     protected String name;
+    protected Point newXY;
 
     //Constructors
     public Organism(int x, int y, World world) {
@@ -29,22 +31,27 @@ public abstract class Organism implements Comparable<Organism> {
         this.world = world;
         this.x = x;
         this.y = y;
+        newXY = new Point();
         InitFeathures();
         this.world.getView().drawObject(x, y, name);
 
     }
+    
+    public Organism()
+    {
+        
+    }
 
-    protected abstract Organism newInstance(int x, int y);
+    protected abstract Organism newInstance(int x, int y);   
 
     public Organism(World _world) {
         this.isAlive = true;
-        this.world = _world;
-        int[] newXY;
+        this.world = _world;        
         newXY = this.world.GetFreeSpot();
-        this.x = newXY[0];
-        this.y = newXY[1];
+        this.x = newXY.x;
+        this.y = newXY.y;
         InitFeathures();
-        this.world.getView().setNewMessage(name + " is initalized");
+        this.world.getView().setNewMessage(this.getClass().getSimpleName() + " is initalized");
         this.world.getView().drawObject(x, y, name);
     }
 
@@ -89,7 +96,7 @@ public abstract class Organism implements Comparable<Organism> {
     public void setIsAlive(boolean newStatus) {
         this.isAlive = newStatus;
         if (!newStatus) {
-            this.world.getView().setNewMessage(this.name + " is dead.");
+            this.world.getView().setNewMessage(this.getClass().getSimpleName() + " is dead.");
             this.world.getView().deleteObject(this.x, this.y);
         }
     }
@@ -122,9 +129,9 @@ public abstract class Organism implements Comparable<Organism> {
         boolean isMoved = false;
 
         while (!isMoved && (i-- != 0)) {
-            int[] newXY = this.newRandomPositionAround();
-            if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.OPEN) {
-                this.world.addCreature(newInstance(newXY[0], newXY[1]));
+            newXY = this.newRandomPositionAround();
+            if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.OPEN) {
+                this.world.addCreature(newInstance(newXY.x, newXY.y));
                 isMoved = true;
             }
         }
@@ -134,7 +141,7 @@ public abstract class Organism implements Comparable<Organism> {
 
     }
 
-    protected int[] newRandomPositionAround() {
+    protected Point newRandomPositionAround() {
         return this.world.getView().positionAround(this.x, this.y);
     }
 

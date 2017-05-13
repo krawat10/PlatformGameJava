@@ -9,6 +9,7 @@ import static View.View.uniqueObject;
 import View.PolygonButton;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.util.Random;
 import javafx.scene.layout.Border;
@@ -34,6 +35,13 @@ public class HexagonalView extends View {
     }
 
     @Override
+    public void setVisibility()
+    {
+        super.setVisibility();
+        this.numberOfFieldAroundOneField = 6;
+    }
+    
+    @Override
     public void draw(Graphics g, int x, int y) {
         Polygon p = new Polygon();
         initHexSettings();
@@ -57,82 +65,13 @@ public class HexagonalView extends View {
     }
 
     @Override
-    public int[] positionAround(int x, int y) {
+    public Point positionAround(int x, int y) {
         int newX = x;
         int newY = y;
         Random random = new Random();
         int direction = random.nextInt(6);
-        if (y % 2 == 0) {
-            switch (direction) {
-                case 0: {
-                    newX = x;
-                    newY = y - 2;
-                    break;
-                }
-                case 1: {
-                    newX = x;
-                    newY = y - 1;
-                    break;
-                }
-                case 2: {
-                    newX = x;
-                    newY = y + 1;
-                    break;
-                }
-                case 3: {
-                    newX = x;
-                    newY = y + 2;
-                    break;
-                }
-                case 4: {
-                    newX = x - 1;
-                    newY = y + 1;
-                    break;
-                }
-                case 5: {
-                    newX = x - 1;
-                    newY = y - 1;
-                    break;
-                }
-            }
-        } else {
-            switch (direction) {
-                case 0: {
-                    newX = x;
-                    newY = y - 2;
-                    break;
-                }
-                case 1: {
-                    newX = x + 1;
-                    newY = y - 1;
-                    break;
-                }
-                case 2: {
-                    newX = x + 1;
-                    newY = y + 1;
-                    break;
-                }
-                case 3: {
-                    newX = x;
-                    newY = y + 2;
-                    break;
-                }
-                case 4: {
-                    newX = x;
-                    newY = y + 1;
-                    break;
-                }
-                case 5: {
-                    newX = x;
-                    newY = y - 1;
-                    break;
-                }
-            }
-        }
-        int[] newPositionTab = new int[2];
-        newPositionTab[0] = newX;
-        newPositionTab[1] = newY;
-        return newPositionTab;
+        Point newField = getPositionAround(x, y, direction);
+        return newField;
     }
 
     private void initHexSettings() {
@@ -173,66 +112,129 @@ public class HexagonalView extends View {
     }
 
     @Override
-    public int[] newDirection(int x, int y, Keyboard.KeyName key) {
-        int[] newXY = new int[2];
-        if(y%2 == 0)
-        {
+    public Point newDirection(int x, int y, Keyboard.KeyName key) {        
+        int newFieldIndex;
         switch (key) {
             case DOWN: {
-                newXY[0] = x;
-                newXY[1] = y + 2;
+                newFieldIndex = 3;
                 break;
             }
             case UP: {
-                newXY[0] = x;
-                newXY[1] = y - 2;
+                newFieldIndex = 0;
                 break;
             }
             case LEFT: {
-                newXY[0] = x - 1;
-                newXY[1] = y - 1;
+                if(y%2 == 0)
+                    newFieldIndex = 4;
+                else
+                    newFieldIndex = 5;
                 break;
             }
             case RIGHT: {
-                newXY[0] = x;
-                newXY[1] = y - 1;
+                if(y%2 == 0)
+                    newFieldIndex = 2;
+                else
+                    newFieldIndex = 1;
                 break;
             }
             default: {
-                newXY[0] = x;
-                newXY[1] = y;
+                newFieldIndex = -1;
             }
         }
+        Point newPos = getPositionAround(x, y, newFieldIndex);        
+        return newPos;
+    }
+
+    @Override
+    public Point getPositionAround(int x, int y, int indexOfField) {
+        Point p = new Point();
+        if (y % 2 == 0) {
+            switch (indexOfField) {
+                case 0: {
+                    p.x = x;
+                    p.y = y - 2;
+                    break;
+                }
+                case 1: {
+                    p.x = x;
+                    p.y = y - 1;
+                    break;
+                }
+                case 2: {
+                    p.x = x;
+                    p.y = y + 1;
+                    break;
+                }
+                case 3: {
+                    p.x = x;
+                    p.y = y + 2;
+                    break;
+                }
+                case 4: {
+                    p.x = x - 1;
+                    p.y = y + 1;
+                    break;
+                }
+                case 5: {
+                    p.x = x - 1;
+                    p.y = y - 1;
+                    break;
+                }
+                case -1: {
+                    p.x = x;
+                    p.y = y;
+                    break;
+                }
+                default: {
+                    p.x = x;
+                    p.y = y;
+                    break;
+                }
+            }
+        } else {
+            switch (indexOfField) {
+                case 0: {
+                    p.x = x;
+                    p.y = y - 2;
+                    break;
+                }
+                case 1: {
+                    p.x = x + 1;
+                    p.y = y - 1;
+                    break;
+                }
+                case 2: {
+                    p.x = x + 1;
+                    p.y = y + 1;
+                    break;
+                }
+                case 3: {
+                    p.x = x;
+                    p.y = y + 2;
+                    break;
+                }
+                case 4: {
+                    p.x = x;
+                    p.y = y + 1;
+                    break;
+                }
+                case 5: {
+                    p.x = x;
+                    p.y = y - 1;
+                    break;
+                }
+                case -1: {
+                    p.x = x;
+                    p.y = y;
+                    break;
+                }
+                default: {
+                    p.x = x;
+                    p.y = y;
+                    break;
+                }
+            }
         }
-        else
-        {
-            switch (key) {
-            case DOWN: {
-                newXY[0] = x;
-                newXY[1] = y + 2;
-                break;
-            }
-            case UP: {
-                newXY[0] = x;
-                newXY[1] = y - 2;
-                break;
-            }
-            case LEFT: {
-                newXY[0] = x;
-                newXY[1] = y + 1;
-                break;
-            }
-            case RIGHT: {
-                newXY[0] = x + 1;
-                newXY[1] = y + 1;
-                break;
-            }
-            default: {
-                newXY[0] = x;
-                newXY[1] = y;
-            }
-            }
-        }
-        return newXY;
+        return p;
     }
 }

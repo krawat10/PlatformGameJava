@@ -59,9 +59,9 @@ public class Human extends Animal {
             int i = 8;
             boolean isNewSpot = false;
             while (!isNewSpot && (i-- != 0)) {
-                int[] newXY = this.newRandomPositionAround();
-                if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.OPEN) {
-                    attacker.draw(newXY[0], newXY[1]);
+                newXY = this.newRandomPositionAround();
+                if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.OPEN) {
+                    attacker.draw(newXY.x, newXY.y);
                     isNewSpot = true;
                 }
             }
@@ -77,7 +77,7 @@ public class Human extends Animal {
         if (direcrion == Keyboard.KeyName.DISACTIVATED) {
             return;
         }
-        int[] newXY = new int[2];
+        
 
         this.AlzureShieldTour--;
         if ((this.AlzureShieldTour == 0) && this.AlzureShield) {
@@ -92,14 +92,14 @@ public class Human extends Animal {
                 this.world.getView().setNewMessage("Azure shield activated!");
             }
         } else {
-            newXY = this.world.getView().newDirection(x, y, direcrion);
+            this.newXY = this.world.getView().newDirection(x, y, direcrion);
         
 
-        if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.OPEN) {
-            this.draw(newXY[0], newXY[1]);
-        } else if (this.world.checkPosition(newXY[0], this.newXY[1]) == World.positionStatus.MONSTER) {
-            if (this.attack(newXY[0], this.newXY[1])) {
-                this.draw(newXY[0], this.newXY[1]);
+        if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.OPEN) {
+            this.draw(newXY.x, newXY.y);
+        } else if (this.world.checkPosition(this.newXY.x, this.newXY.y) == World.positionStatus.MONSTER) {
+            if (this.attack(newXY.x, this.newXY.y)) {
+                this.draw(newXY.x, this.newXY.y);
             } else {
                 return;
             }

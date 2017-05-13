@@ -7,15 +7,15 @@ package Organism;
 
 import platformgame.World;
 import View.*;
+import java.awt.Point;
 
 /**
  *
  * @author Mateusz
  */
 public abstract class Animal extends Organism {
-
-    protected int[] newXY = new int[2];
-
+   
+    //protected Point newXY;
     public Animal(int x, int y, World world) {
         super(x, y, world);
     }
@@ -27,7 +27,8 @@ public abstract class Animal extends Organism {
     @Override
     public void action() {
         boolean isMoved = false;
-        while (!isMoved) {
+        int count = 20;
+        while (!isMoved && (count-- > 0)) {
             newXY = this.newRandomPositionAround();
             isMoved = move();
 
@@ -35,16 +36,24 @@ public abstract class Animal extends Organism {
     }
 
     protected boolean move() {
-        if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.OPEN) {
-            this.draw(newXY[0], newXY[1]);
+        if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.OPEN) {
+            this.draw(newXY.x, newXY.y);
             return true;
-        } else if (this.world.checkPosition(newXY[0], newXY[1]) == World.positionStatus.MONSTER) {
-            if (this.attack(newXY[0], newXY[1])) {
-                this.draw(newXY[0], newXY[1]);
+        } else if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.MONSTER) {
+            if (this.attack(newXY.x, newXY.y)) {
+                this.draw(newXY.x, newXY.y);
                 return true;
             } else {
                 return true;
             }
+        }
+        return false;
+    }
+
+    protected boolean moveToOpenPosition() {
+        if (this.world.checkPosition(newXY.x, newXY.y) == World.positionStatus.OPEN) {
+            this.draw(newXY.x, newXY.y);
+            return true;
         }
         return false;
     }
@@ -55,11 +64,12 @@ public abstract class Animal extends Organism {
 
     @Override
     public boolean isPushBackAttack(Organism attacker) {
-        if (this.getName().equals(attacker.getName())) {
+        if (attacker.getClass().isInstance(this)) {
             multiplication();
             return true;
         } else {
             return super.isPushBackAttack(attacker);
         }
     }
+
 }

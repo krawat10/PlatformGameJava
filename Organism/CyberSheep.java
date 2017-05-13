@@ -31,7 +31,7 @@ public class CyberSheep extends Animal{
         java.util.List<Organism> list = world.getList();
 	for (int i = 0; i < list.size(); i++)
 	{
-		if (list.get(i).getName() == "sb")
+		if (list.get(i) instanceof SosnowskyBorsch)
 		{			
 			currentDirectionX = 0;
 			currentDirectionY = 0;			
@@ -43,8 +43,8 @@ public class CyberSheep extends Animal{
 			{
 				currentDirectionY = (this.getY() > list.get(i).getY()) ? (-1) : 1;
 			}							
-				newXY[0] = this.getX() + currentDirectionX;
-				newXY[1] = this.getY() + currentDirectionY;			
+				newXY.x = this.getX() + currentDirectionX;
+				newXY.y = this.getY() + currentDirectionY;			
                         move();
                         return;
 		}

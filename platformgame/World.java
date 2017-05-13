@@ -10,6 +10,7 @@ import Organism.Organism;
 import View.GridView;
 import View.*;
 import static com.sun.java.accessibility.util.AWTEventMonitor.addKeyListener;
+import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,18 +37,17 @@ public class World implements IObserver, IOOperation {
 
     private int sizeX;
     private int sizeY;
-    private Keyboard input;
+    private Keyboard.KeyName activeKey = Keyboard.KeyName.DISACTIVATED;
     private int numberOfCreatures = 0;
     private List<Organism> organism;
     private View view;
 
     public World(int sizeX, int sizeY) {
-        view = GridView.getInstance();
+        view = HexagonalView.getInstance();
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         initView();
-        input = view.getKeyListener();
-        input.AddSubscriber(this);
+        view.getKeyListener().AddSubscriber(this);        
         organism = new ArrayList<Organism>();
     }
 
@@ -58,7 +58,7 @@ public class World implements IObserver, IOOperation {
         view.setWorld(this);
     }
 
-    Organism getCrature(int x, int y) {
+    public Organism getCrature(int x, int y) {
         for (Organism org : organism) {
             if ((org.getX() == x) && (org.getY() == y)) {
                 return org;
@@ -75,6 +75,7 @@ public class World implements IObserver, IOOperation {
     private void ClearDeadMonster() {
         for (int j = 0; j < organism.size(); j++) {
             if (!organism.get(j).getIsAlive()) {
+                
                 organism.remove(j);
                 numberOfCreatures--;
             }
@@ -97,10 +98,10 @@ public class World implements IObserver, IOOperation {
             this.ClearDeadMonster();
             this.view.repaint();
         }
-        this.input.activeKey = Keyboard.KeyName.DISACTIVATED;
+        this.activeKey = Keyboard.KeyName.DISACTIVATED;
     }
 
-    public int[] GetFreeSpot() {
+    public Point GetFreeSpot() {
         boolean isInitalized = false;
         int randX = 2;
         int randY = 1;
@@ -116,17 +117,16 @@ public class World implements IObserver, IOOperation {
                 isInitalized = true;
             }
         }
-        int[] tab = new int[2];
-        tab[0] = randX;
-        tab[1] = randY;
-        return tab;
+        Point p = new Point(randX, randY);
+        return p;
     }
 
     public boolean attackMonsterAtPosition(int x, int y, Organism attacker) {
         boolean isDefended;
         for (Organism org : organism) {
             if ((org.getX() == x) && (org.getY() == y)) {
-                String message = attacker.getName() + " attack " + org.getName();
+                String message = 
+                        attacker.getClass().getSimpleName() + " attack " + org.getClass().getSimpleName();
                 this.getView().setNewMessage(message);
                 isDefended = org.isPushBackAttack(attacker);
                 return !isDefended;
@@ -148,7 +148,7 @@ public class World implements IObserver, IOOperation {
     }
 
     public Keyboard.KeyName getImput() {
-        return this.input.activeKey;
+        return this.activeKey;
     }
 
     public void setNumberOfCreatures(int newNumberOfCreatures) {
@@ -184,7 +184,7 @@ public class World implements IObserver, IOOperation {
 
     @Override
     public void update(Object object) {
-       
+       this.activeKey = (Keyboard.KeyName)object; 
     }
 
     @Override
@@ -264,8 +264,7 @@ public class World implements IObserver, IOOperation {
 
             initView();
             view.initResizedGrid(sizeX, sizeY);
-            input = view.getKeyListener();
-            input.AddSubscriber(this);
+            view.getKeyListener().AddSubscriber(this);
             int count = in.readInt();
             OrganismFactory org = new OrganismFactory(this);
             for (int j = 0; j < count; j++) {

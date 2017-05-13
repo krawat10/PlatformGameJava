@@ -9,6 +9,7 @@ import Organism.Antelope;
 import Organism.CyberSheep;
 import Organism.Grass;
 import Organism.Human;
+import Organism.SosnowskyBorsch;
 import Organism.Wolf;
 import View.GridView;
 import View.View;
@@ -23,12 +24,13 @@ public class PlatformGame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        World word = new World(15, 7);
+        World word = new World(5, 7);
         word.addCreature(new Human(word));
         word.addCreature(new Antelope(word));
-        word.addCreature(new Grass(word));
+       // word.addCreature(new Grass(word));
         word.addCreature(new Wolf(word));
-        word.addCreature(new CyberSheep(word));
+        //word.addCreature(new CyberSheep(word));
+        //word.addCreature(new SosnowskyBorsch(word));
         word.drawWorld();
 
     }
